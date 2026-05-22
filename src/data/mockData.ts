@@ -1,30 +1,36 @@
 export interface Contact {
   id: string
   name: string
-  idCard: string
   phone: string
+  idCard?: string
 }
 
 export interface TimeSlot {
   id: string
   time: string
-  capacity: number
-  booked: number
-  remaining: number
+  available: boolean
+  capacity?: number
+  booked?: number
+  remaining?: number
 }
 
 export interface TicketOrder {
   id: string
   orderNo: string
-  ticketType: string
-  price: number
-  quantity: number
-  status: 'pending' | 'paid' | 'used' | 'refunded'
-  visitDate: string
+  name: string
+  phone: string
+  idCard: string
+  date: string
   timeSlot: string
-  contacts: Contact[]
+  type: string
+  price: number
+  status: 'pending' | 'paid' | 'used' | 'cancelled'
   createTime: string
   qrCode?: string
+  ticketType?: string
+  quantity?: number
+  visitDate?: string
+  contacts?: Contact[]
 }
 
 export interface GiftProduct {
@@ -48,11 +54,7 @@ export interface GiftOrder {
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'completed'
   logisticsNo?: string
   createTime: string
-  receiver: {
-    name: string
-    phone: string
-    address: string
-  }
+  receiver: Contact & { address: string }
 }
 
 export interface GuideService {
@@ -83,6 +85,7 @@ export interface HeritageActivity {
   price: number
   duration: string
   description: string
+  image: string
   availableDates: string[]
   timeSlots: TimeSlot[]
   participants: number
@@ -136,19 +139,6 @@ export interface TourGuide {
   price: number
 }
 
-export interface TourOrder {
-  id: string
-  orderNo: string
-  guide: TourGuide
-  date: string
-  timeSlot: string
-  status: 'pending' | 'paid' | 'used' | 'cancelled'
-  createTime: string
-  contact: Contact
-  participants: number
-  totalPrice: number
-}
-
 export interface Exhibition {
   id: string
   name: string
@@ -162,17 +152,6 @@ export interface Exhibition {
   price: number
 }
 
-export interface ExhibitionOrder {
-  id: string
-  orderNo: string
-  exhibition: Exhibition
-  date: string
-  timeSlot: string
-  status: 'pending' | 'paid' | 'used' | 'cancelled'
-  createTime: string
-  contact: Contact
-}
-
 export interface WeatherData {
   date: string
   temperature: { min: number; max: number }
@@ -183,58 +162,80 @@ export interface WeatherData {
   icon: string
 }
 
+export interface CrowdData {
+  currentCount: number
+  maxCapacity: number
+  peakTime: string
+  peakCount?: number
+  trend: 'up' | 'down' | 'stable'
+  trendData?: number[]
+  hourlyData: { time: string; count: number }[]
+  areas?: { id: string; name: string; count: number; max: number }[]
+}
+
 export interface Complaint {
   id: string
-  type: 'problem' | 'suggestion'
+  type: 'complaint' | 'suggestion'
   title: string
   content: string
   images: string[]
-  status: 'pending' | 'processing' | 'resolved'
   createTime: string
+  status: 'pending' | 'replied'
   reply?: string
   replyTime?: string
 }
 
 export const mockContacts: Contact[] = [
-  { id: '1', name: '张三', idCard: '110101199001011234', phone: '13800138001' },
-  { id: '2', name: '李四', idCard: '110101199502022345', phone: '13900139002' },
+  { id: '1', name: '张三', phone: '13800138001', idCard: '110101199001011234' },
+  { id: '2', name: '李四', phone: '13900139002', idCard: '140101199505055678' },
 ]
 
 export const mockTimeSlots: TimeSlot[] = [
-  { id: '1', time: '09:00-10:00', capacity: 200, booked: 45, remaining: 155 },
-  { id: '2', time: '10:00-11:00', capacity: 200, booked: 78, remaining: 122 },
-  { id: '3', time: '11:00-12:00', capacity: 150, booked: 32, remaining: 118 },
-  { id: '4', time: '14:00-15:00', capacity: 200, booked: 95, remaining: 105 },
-  { id: '5', time: '15:00-16:00', capacity: 200, booked: 67, remaining: 133 },
-  { id: '6', time: '16:00-17:00', capacity: 150, booked: 23, remaining: 127 },
+  { id: '1', time: '09:00-10:00', available: true, capacity: 50, booked: 23, remaining: 27 },
+  { id: '2', time: '10:00-11:00', available: true, capacity: 50, booked: 15, remaining: 35 },
+  { id: '3', time: '11:00-12:00', available: false, capacity: 50, booked: 50, remaining: 0 },
+  { id: '4', time: '13:00-14:00', available: true, capacity: 50, booked: 10, remaining: 40 },
+  { id: '5', time: '14:00-15:00', available: true, capacity: 50, booked: 20, remaining: 30 },
+  { id: '6', time: '15:00-16:00', available: true, capacity: 50, booked: 8, remaining: 42 },
+  { id: '7', time: '16:00-17:00', available: false, capacity: 50, booked: 50, remaining: 0 },
 ]
 
 export const mockTicketOrders: TicketOrder[] = [
   {
     id: '1',
     orderNo: 'TCK20240115001',
-    ticketType: '成人票',
+    name: '张三',
+    phone: '13800138001',
+    idCard: '110101199001011234',
+    date: '2024-01-20',
+    timeSlot: '09:00-10:00',
+    type: '成人票',
+    ticketType: 'adult',
     price: 60,
-    quantity: 2,
+    quantity: 1,
     status: 'paid',
-    visitDate: '2024-01-20',
-    timeSlot: '10:00-11:00',
-    contacts: [mockContacts[0]],
-    createTime: '2024-01-15 10:30:00',
+    createTime: '2024-01-15 09:30:00',
     qrCode: 'TCK20240115001',
+    visitDate: '2024-01-20',
+    contacts: [mockContacts[0]],
   },
   {
     id: '2',
-    orderNo: 'TCK20240114002',
-    ticketType: '学生票',
+    orderNo: 'TCK20240110002',
+    name: '李四',
+    phone: '13900139002',
+    idCard: '140101199505055678',
+    date: '2024-01-12',
+    timeSlot: '14:00-15:00',
+    type: '学生票',
+    ticketType: 'student',
     price: 30,
     quantity: 1,
     status: 'used',
-    visitDate: '2024-01-14',
-    timeSlot: '14:00-15:00',
+    createTime: '2024-01-10 14:00:00',
+    qrCode: 'TCK20240110002',
+    visitDate: '2024-01-12',
     contacts: [mockContacts[1]],
-    createTime: '2024-01-13 15:45:00',
-    qrCode: 'TCK20240114002',
   },
 ]
 
@@ -244,7 +245,7 @@ export const mockGiftProducts: GiftProduct[] = [
     name: '长城主题陶瓷杯',
     price: 128,
     originalPrice: 168,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=chinese%20great%20wall%20themed%20ceramic%20cup%20with%20traditional%20pattern&image_size=square',
+    image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=400&h=400&fit=crop',
     description: '采用传统工艺制作，杯身印有长城图案',
     category: '工艺品',
     stock: 50,
@@ -255,7 +256,7 @@ export const mockGiftProducts: GiftProduct[] = [
     name: '明代兵器模型套装',
     price: 268,
     originalPrice: 328,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=ancient%20chinese%20ming%20dynasty%20weapon%20model%20set%20sword%20spear&image_size=square',
+    image: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=400&h=400&fit=crop',
     description: '1:6比例还原明代兵器',
     category: '模型玩具',
     stock: 30,
@@ -265,7 +266,7 @@ export const mockGiftProducts: GiftProduct[] = [
     id: '3',
     name: '长城风景明信片套装',
     price: 38,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=chinese%20great%20wall%20landscape%20postcard%20set%20beautiful%20scenery&image_size=square',
+    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=400&fit=crop',
     description: '精选长城四季风景，一套12张',
     category: '文具',
     stock: 200,
@@ -275,7 +276,7 @@ export const mockGiftProducts: GiftProduct[] = [
     id: '4',
     name: '非遗剪纸艺术作品',
     price: 198,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=chinese%20traditional%20paper%20cutting%20art%20great%20wall%20pattern&image_size=square',
+    image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop',
     description: '国家级非遗传承人手工制作',
     category: '非遗作品',
     stock: 20,
@@ -286,7 +287,7 @@ export const mockGiftProducts: GiftProduct[] = [
     name: '长城历史书籍套装',
     price: 258,
     originalPrice: 318,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=chinese%20great%20wall%20history%20book%20collection%20set%20hardcover&image_size=square',
+    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop',
     description: '一套三本，详细介绍长城历史',
     category: '图书',
     stock: 80,
@@ -296,7 +297,7 @@ export const mockGiftProducts: GiftProduct[] = [
     id: '6',
     name: '传统刺绣钱包',
     price: 158,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=chinese%20traditional%20embroidery%20wallet%20with%20floral%20pattern&image_size=square',
+    image: 'https://images.unsplash.com/photo-1577776359516-58e14a529e4a?w=400&h=400&fit=crop',
     description: '手工刺绣，精美典雅',
     category: '服饰配件',
     stock: 60,
@@ -314,7 +315,7 @@ export const mockGiftOrders: GiftOrder[] = [
     status: 'shipped',
     logisticsNo: 'SF1234567890',
     createTime: '2024-01-15 09:20:00',
-    receiver: { name: '张三', phone: '13800138001', address: '北京市朝阳区xxx街道xxx号' },
+    receiver: { id: '1', name: '张三', phone: '13800138001', address: '北京市朝阳区xxx街道xxx号' },
   },
   {
     id: '2',
@@ -325,7 +326,7 @@ export const mockGiftOrders: GiftOrder[] = [
     status: 'completed',
     logisticsNo: 'YT9876543210',
     createTime: '2024-01-10 14:30:00',
-    receiver: { name: '李四', phone: '13900139002', address: '山西省太原市xxx路xxx号' },
+    receiver: { id: '2', name: '李四', phone: '13900139002', address: '山西省太原市xxx路xxx号' },
   },
 ]
 
@@ -372,6 +373,7 @@ export const mockHeritageActivities: HeritageActivity[] = [
     price: 168,
     duration: '1.5小时',
     description: '在非遗传承人的指导下，学习传统剪纸技艺',
+    image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop',
     availableDates: ['2024-01-21', '2024-01-22', '2024-01-27', '2024-01-28'],
     timeSlots: mockTimeSlots.slice(2, 5),
     participants: 10,
@@ -382,6 +384,7 @@ export const mockHeritageActivities: HeritageActivity[] = [
     price: 198,
     duration: '2小时',
     description: '亲手制作一件属于自己的陶艺作品',
+    image: 'https://images.unsplash.com/photo-1551632436-7e4613849d7d?w=400&h=300&fit=crop',
     availableDates: ['2024-01-20', '2024-01-23', '2024-01-26', '2024-01-29'],
     timeSlots: mockTimeSlots.slice(1, 4),
     participants: 8,
@@ -392,6 +395,7 @@ export const mockHeritageActivities: HeritageActivity[] = [
     price: 128,
     duration: '1小时',
     description: '体验古代射箭运动，感受传统武艺',
+    image: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=400&h=300&fit=crop',
     availableDates: ['2024-01-20', '2024-01-21', '2024-01-22', '2024-01-23'],
     timeSlots: mockTimeSlots.slice(3, 6),
     participants: 12,
@@ -419,21 +423,21 @@ export const mockVenues: Venue[] = [
     name: '一号展厅',
     description: '可容纳200人的大型展厅，适合举办各类展览活动',
     capacity: 200,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=modern%20museum%20exhibition%20hall%20large%20space%20bright%20lighting&image_size=landscape_16_9',
+    image: 'https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?w=800&h=450&fit=crop',
   },
   {
     id: '2',
     name: '多功能厅',
     description: '配备音响投影设备，适合举办讲座、会议等活动',
     capacity: 100,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=modern%20conference%20room%20multipurpose%20hall%20with%20projector&image_size=landscape_16_9',
+    image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&h=450&fit=crop',
   },
   {
     id: '3',
     name: 'VIP接待室',
     description: '温馨舒适的小型接待空间，适合商务洽谈',
     capacity: 20,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=elegant%20VIP%20reception%20room%20luxurious%20comfortable%20chinese%20style&image_size=landscape_16_9',
+    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=450&fit=crop',
   },
 ]
 
@@ -457,7 +461,7 @@ export const mockTourGuides: TourGuide[] = [
   {
     id: '1',
     name: '张明',
-    avatar: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=professional%20chinese%20male%20tour%20guide%20portrait%20friendly%20smile&image_size=square',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop',
     title: '高级导游',
     experience: '15年',
     languages: ['中文', '英文'],
@@ -469,7 +473,7 @@ export const mockTourGuides: TourGuide[] = [
   {
     id: '2',
     name: '李华',
-    avatar: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=professional%20chinese%20female%20tour%20guide%20portrait%20elegant&image_size=square',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
     title: '金牌导游',
     experience: '10年',
     languages: ['中文', '日文', '韩文'],
@@ -485,7 +489,7 @@ export const mockExhibitions: Exhibition[] = [
     id: '1',
     name: '长城历史文化特展',
     description: '展示长城从春秋战国到明清时期的历史变迁',
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=great%20wall%20history%20exhibition%20museum%20display%20ancient%20relics&image_size=landscape_16_9',
+    image: 'https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?w=800&h=450&fit=crop',
     startDate: '2024-01-01',
     endDate: '2024-03-31',
     location: '一号展厅',
@@ -497,7 +501,7 @@ export const mockExhibitions: Exhibition[] = [
     id: '2',
     name: '明代军事装备展',
     description: '展出明代各种兵器、盔甲等军事装备',
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=ming%20dynasty%20military%20equipment%20exhibition%20ancient%20weapons&image_size=landscape_16_9',
+    image: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=800&h=450&fit=crop',
     startDate: '2024-01-15',
     endDate: '2024-04-15',
     location: '二号展厅',
@@ -538,58 +542,76 @@ export const mockWeatherData: WeatherData[] = [
   {
     date: '2024-01-23',
     temperature: { min: -8, max: 2 },
-    condition: '小雪',
-    wind: '北风5-6级',
+    condition: '雪',
+    wind: '北风4-5级',
     humidity: 75,
     uvIndex: 1,
     icon: 'snowy',
   },
   {
     date: '2024-01-24',
-    temperature: { min: -5, max: 6 },
+    temperature: { min: -10, max: 0 },
     condition: '晴',
-    wind: '东风2-3级',
+    wind: '西北风3-4级',
     humidity: 40,
+    uvIndex: 2,
+    icon: 'sunny',
+  },
+  {
+    date: '2024-01-25',
+    temperature: { min: -5, max: 6 },
+    condition: '多云',
+    wind: '东南风2-3级',
+    humidity: 55,
+    uvIndex: 2,
+    icon: 'cloudy',
+  },
+  {
+    date: '2024-01-26',
+    temperature: { min: -3, max: 9 },
+    condition: '晴',
+    wind: '南风2-3级',
+    humidity: 45,
     uvIndex: 3,
     icon: 'sunny',
   },
 ]
 
+export const mockCrowdData: CrowdData = {
+  currentCount: 320,
+  maxCapacity: 1000,
+  peakTime: '10:00-11:00',
+  peakCount: 420,
+  trend: 'up',
+  trendData: [150, 420, 380, 200, 250, 380, 320, 280],
+  hourlyData: [
+    { time: '09:00', count: 150 },
+    { time: '10:00', count: 420 },
+    { time: '11:00', count: 380 },
+    { time: '12:00', count: 200 },
+    { time: '13:00', count: 250 },
+    { time: '14:00', count: 380 },
+    { time: '15:00', count: 320 },
+    { time: '16:00', count: 280 },
+  ],
+  areas: [
+    { id: '1', name: '一号展厅', count: 120, max: 300 },
+    { id: '2', name: '二号展厅', count: 80, max: 250 },
+    { id: '3', name: '互动体验区', count: 60, max: 200 },
+    { id: '4', name: '文创商店', count: 40, max: 150 },
+  ],
+}
+
 export const mockComplaints: Complaint[] = [
   {
     id: '1',
     type: 'suggestion',
-    title: '建议增加更多互动体验项目',
-    content: '参观时发现博物馆的互动体验项目较少，建议增加一些适合家庭参与的互动活动，让孩子们也能更好地了解长城文化。',
+    title: '关于增加讲解设备的建议',
+    content: '建议在展厅内增加更多的语音讲解设备，方便游客自行了解展品信息。',
     images: [],
-    status: 'resolved',
-    createTime: '2024-01-10 09:30:00',
-    reply: '感谢您的建议！我们正在规划新的互动体验区域，预计下个月对外开放，敬请期待。',
-    replyTime: '2024-01-12 14:00:00',
-  },
-  {
-    id: '2',
-    type: 'problem',
-    title: '卫生间卫生问题',
-    content: '今天参观时发现二楼卫生间地面有水渍，地面较滑，存在安全隐患。',
-    images: [],
-    status: 'processing',
-    createTime: '2024-01-15 10:20:00',
+    createTime: '2024-01-15 10:30:00',
+    status: 'replied',
+    reply: '感谢您的建议！我们正在计划增加智能导览设备，预计下月投入使用。',
+    replyTime: '2024-01-15 14:00:00',
   },
 ]
-
-export const mockCrowdData = {
-  currentCount: 1256,
-  maxCapacity: 3000,
-  peakTime: '10:00-11:00',
-  peakCount: 2150,
-  trend: [800, 1200, 1500, 1800, 2000, 2150, 1900, 1600, 1300, 1100, 900, 700],
-  areas: [
-    { name: '一号展厅', count: 320, max: 500 },
-    { name: '二号展厅', count: 280, max: 400 },
-    { name: '三号展厅', count: 180, max: 300 },
-    { name: '文创商店', count: 150, max: 200 },
-    { name: '休息区', count: 80, max: 150 },
-    { name: '其他区域', count: 246, max: 1450 },
-  ],
-}

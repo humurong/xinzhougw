@@ -24,7 +24,7 @@ const getStatusInfo = computed(() => {
 const timeLabels = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00']
 
 const maxTrendValue = computed(() => {
-  return Math.max(...crowdData.value.trend)
+  return Math.max(...(crowdData.value.trendData || []))
 })
 </script>
 
@@ -132,7 +132,7 @@ const maxTrendValue = computed(() => {
             </h3>
             <div class="h-64 flex items-end justify-between gap-2 px-4">
               <div 
-                v-for="(value, index) in crowdData.trend" 
+                v-for="(value, index) in crowdData.trendData" 
                 :key="index"
                 class="flex-1 flex flex-col items-center gap-2"
               >

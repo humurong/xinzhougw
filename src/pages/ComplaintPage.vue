@@ -6,7 +6,7 @@ import Footer from '@/components/Footer.vue'
 import { mockComplaints, type Complaint } from '@/data/mockData'
 
 const activeTab = ref<'submit' | 'list'>('submit')
-const complaintType = ref<'problem' | 'suggestion'>('problem')
+const complaintType = ref<'complaint' | 'suggestion'>('complaint')
 const title = ref('')
 const content = ref('')
 const images = ref<string[]>([])
@@ -107,10 +107,10 @@ const closeSuccessModal = () => {
                 <label class="block text-sm font-medium text-gray-700 mb-3">反馈类型</label>
                 <div class="flex gap-4">
                   <button
-                    @click="complaintType = 'problem'"
+                    @click="complaintType = 'complaint'"
                     :class="[
                       'flex-1 flex items-center justify-center gap-2 py-4 rounded-xl transition-all duration-300 border-2',
-                      complaintType === 'problem' 
+                      complaintType === 'complaint' 
                         ? 'border-red-500 bg-red-50 text-red-700' 
                         : 'border-gray-200 hover:border-red-300'
                     ]"
@@ -215,14 +215,14 @@ const closeSuccessModal = () => {
                 <div class="flex items-center gap-3">
                   <div :class="[
                     'w-10 h-10 rounded-xl flex items-center justify-center',
-                    complaint.type === 'problem' ? 'bg-red-100' : 'bg-green-100'
+                    complaint.type === 'complaint' ? 'bg-red-100' : 'bg-green-100'
                   ]">
-                    <AlertCircle v-if="complaint.type === 'problem'" class="w-5 h-5 text-red-600" />
+                    <AlertCircle v-if="complaint.type === 'complaint'" class="w-5 h-5 text-red-600" />
                     <FileText v-else class="w-5 h-5 text-green-600" />
                   </div>
                   <div>
                     <h4 class="font-bold text-gray-900">{{ complaint.title }}</h4>
-                    <p class="text-sm text-gray-400">{{ complaint.type === 'problem' ? '问题投诉' : '建议意见' }}</p>
+                    <p class="text-sm text-gray-400">{{ complaint.type === 'complaint' ? '问题投诉' : '建议意见' }}</p>
                   </div>
                 </div>
                 <span :class="['px-3 py-1 rounded-full text-sm font-medium', getStatusColor(complaint.status)]">
