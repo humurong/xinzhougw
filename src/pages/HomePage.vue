@@ -16,7 +16,8 @@ const slides = [
     title: '穿越千年，触摸历史',
     subtitle: 'Explore the Great Wall',
     description: '探索长城的辉煌历史，感受中华文明的博大精深',
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=great%20wall%20of%20china%20at%20golden%20sunset%20dramatic%20lighting%20ancient%20stone%20architecture%20misty%20mountains&image_size=landscape_16_9',
+    image: 'https://picsum.photos/seed/greatwall1/1920/1080?blur=0',
+    backupImage: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&h=1080&fit=crop',
     buttonText: '立即预约',
     buttonPath: '/ticket',
   },
@@ -24,7 +25,8 @@ const slides = [
     title: '非遗传承，匠心独运',
     subtitle: 'Intangible Heritage',
     description: '体验传统手工艺，感受非遗文化的独特魅力',
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=chinese%20traditional%20paper%20cutting%20artisan%20workshop%20warm%20lighting%20cultural%20heritage%20craftsmanship&image_size=landscape_16_9',
+    image: 'https://picsum.photos/seed/culture2/1920/1080?blur=0',
+    backupImage: 'https://images.unsplash.com/photo-1544569146-534e1114661d?w=1920&h=1080&fit=crop',
     buttonText: '体验非遗',
     buttonPath: '/heritage',
   },
@@ -32,7 +34,8 @@ const slides = [
     title: '文化盛宴，精彩呈现',
     subtitle: 'Cultural Exhibition',
     description: '丰富的展览活动，带您领略长城文化的独特魅力',
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=museum%20exhibition%20ancient%20chinese%20relics%20great%20wall%20history%20elegant%20lighting%20modern%20museum&image_size=landscape_16_9',
+    image: 'https://picsum.photos/seed/exhibition3/1920/1080?blur=0',
+    backupImage: 'https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?w=1920&h=1080&fit=crop',
     buttonText: '查看展览',
     buttonPath: '/exhibition',
   },
@@ -148,11 +151,16 @@ onMounted(() => {
               currentSlide === index ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
             ]"
           >
-            <img 
-              :src="slide.image" 
-              :alt="slide.title"
-              class="w-full h-full object-cover"
-            />
+            <div class="w-full h-full">
+              <img 
+                :src="slide.image" 
+                :alt="slide.title"
+                class="w-full h-full object-cover"
+                @error="(e: any) => e.target.src = slide.backupImage"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-br from-stone-800/50 via-stone-700/30 to-stone-900/40"></div>
+            </div>
             <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
           </div>

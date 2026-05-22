@@ -4,5 +4,5 @@ $gitExe = "D:\Program Files\Git\bin\git.exe"
 & $gitExe config --global user.email "humurong@hotmail.com"
 
 & $gitExe add -A
-& $gitExe commit -m "Update: UI redesign with amber theme and improved styling"
-& $gitExe push -f origin main
+& $gitExe commit -m "Update: Fix carousel images and gift product page UI"
+& $gitExe push origin main
